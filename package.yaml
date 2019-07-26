@@ -26,6 +26,10 @@ dependencies:
 - servant-server
 - wai
 - warp
+- bytestring
+- beam-core
+- beam-postgres
+- text
 
 ghc-options:
 - -Wall
