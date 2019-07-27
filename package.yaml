@@ -30,6 +30,7 @@ dependencies:
 - beam-core
 - beam-postgres
 - text
+- postgresql-simple
 
 ghc-options:
 - -Wall

@@ -15,6 +15,7 @@ import Import hiding (id)
 import Data.Text (Text)
 import Database.Beam
 import Database.Beam.Postgres
+import Data.Aeson
 
 data UserT f = User
   { _id :: Columnar f Int
@@ -30,6 +31,8 @@ type User = UserT Identity
 deriving instance Show User
 deriving instance Eq User
 deriving instance Ord User
+deriving instance ToJSON User
+deriving instance FromJSON User
 
 type UserId = PrimaryKey UserT Identity
 
@@ -50,3 +53,11 @@ instance Database Postgres ConduitDb
 
 conduitDb :: DatabaseSettings Postgres ConduitDb
 conduitDb = defaultDbSettings
+
+selectUsers :: (HasConnection env) => RIO env [User]
+selectUsers = do
+  env <- ask
+  liftIO $ 
+    runBeamPostgres (connectionL env) $ 
+      runSelectReturningList $ select $
+        all_ (_conduitUsers conduitDb)

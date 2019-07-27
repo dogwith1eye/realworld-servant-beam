@@ -3,6 +3,7 @@ module Types where
 
 import RIO
 import RIO.Process
+import Database.Beam.Postgres
 
 -- | Command line arguments
 data Options = Options
@@ -14,6 +15,7 @@ data App = App
   , appProcessContext :: !ProcessContext
   , appOptions :: !Options
   , appPort :: !Int
+  , appConnection :: !Connection
   }
 
 instance HasLogFunc App where
@@ -27,3 +29,10 @@ instance HasPort Int where
   portL = id
 instance HasPort App where
   portL = appPort
+
+class HasConnection env where
+  connectionL :: env -> Connection
+instance HasConnection Connection where
+  connectionL = id
+instance HasConnection App where
+  connectionL = appConnection
