@@ -1,7 +1,9 @@
 {
-	"name": "Servant Sample",
-	"dockerFile": "Dockerfile",
-	"appPort": ["9000", "8080:8080"],
+	"name": "Servant Beam Sample",
+	"dockerComposeFile": ["docker-compose.yml"],
+	"service": "web",
+	"workspaceFolder": "/workspace",
+	"shutdownAction": "stopCompose",
 	"extensions": [
 		"alanz.vscode-hie-server"
 	]
