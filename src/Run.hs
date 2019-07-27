@@ -24,8 +24,11 @@ $(deriveJSON defaultOptions ''User)
 
 type API = "users" :> Get '[JSON] [User]
 
-startApp :: RIO env ()
-startApp = liftIO $ run 8080 app
+startApp ::  (HasLogFunc env, HasPort env) => RIO env ()
+startApp = do
+  logInfo "booting up"
+  env <- ask
+  liftIO $ run (portL env) app
 
 app :: Application
 app = serve api server

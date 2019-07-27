@@ -28,5 +28,6 @@ main = do
           { appLogFunc = lf
           , appProcessContext = pc
           , appOptions = options
+          , appPort = 8080
           }
      in runRIO app startApp
