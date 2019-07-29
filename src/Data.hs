@@ -61,3 +61,11 @@ selectUsers = do
     runBeamPostgres (connectionL env) $ 
       runSelectReturningList $ select $
         all_ (_conduitUsers conduitDb)
+
+selectUsersDebug :: (HasConnection env, HasLogFunc env) => RIO env [User]
+selectUsersDebug = do
+  env <- ask
+  liftIO $ 
+    runBeamPostgresDebug (\s -> runRIO env $ logInfo $ displayShow s) (connectionL env) $ 
+      runSelectReturningList $ select $
+        all_ (_conduitUsers conduitDb)
