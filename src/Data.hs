@@ -11,7 +11,7 @@
 
 module Data where
 
-import Import hiding (id)
+import Import
 import Data.Text (Text)
 import Database.Beam
 import Database.Beam.Postgres
@@ -54,18 +54,24 @@ instance Database Postgres ConduitDb
 conduitDb :: DatabaseSettings Postgres ConduitDb
 conduitDb = defaultDbSettings
 
-selectUsers :: (HasConnection env) => RIO env [User]
-selectUsers = do
+runBeam :: (HasConnection env) => Pg a -> RIO env a
+runBeam pg = do
   env <- ask
-  liftIO $ 
-    runBeamPostgres (connectionL env) $ 
-      runSelectReturningList $ select $
-        all_ (_conduitUsers conduitDb)
+  liftIO $
+    runBeamPostgres (connectionL env) $ pg
+
+runBeamDebug :: (HasConnection env, HasLogFunc env) => Pg a -> RIO env a
+runBeamDebug pg = do
+  env <- ask
+  liftIO $
+    runBeamPostgresDebug (\s -> runRIO env $ logInfo $ fromString s) (connectionL env) $ pg
+
+selectUsers :: (HasConnection env) => RIO env [User]
+selectUsers = runBeam $ 
+  runSelectReturningList $
+    select $ all_ (_conduitUsers conduitDb)
 
 selectUsersDebug :: (HasConnection env, HasLogFunc env) => RIO env [User]
-selectUsersDebug = do
-  env <- ask
-  liftIO $ 
-    runBeamPostgresDebug (\s -> runRIO env $ logInfo $ displayShow s) (connectionL env) $ 
-      runSelectReturningList $ select $
-        all_ (_conduitUsers conduitDb)
+selectUsersDebug = runBeamDebug $ 
+  runSelectReturningList $
+    select $ all_ (_conduitUsers conduitDb)

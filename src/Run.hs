@@ -11,7 +11,7 @@ import Import
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Servant
-import Data (selectUsers, User)
+import Data
 
 type API = "users" :> Get '[JSON] [User]
 
@@ -22,17 +22,14 @@ startApp = do
   logInfo $ "app is listening on port " <> (display (portL env))
   liftIO $ run (portL env) app
 
-conduit :: (HasConnection env) => RIO env Application
+conduit :: (HasConnection env, HasLogFunc env) => RIO env Application
 conduit = serve api <$> server
 
 api :: Proxy API
 api = Proxy
 
-server :: (HasConnection env) => RIO env (Server API)
+server :: (HasConnection env, HasLogFunc env) => RIO env (Server API)
 server = users
 
-toHandler :: a -> Servant.Handler a
-toHandler = return
-
-users :: (HasConnection env) => RIO env (Servant.Handler [User])
-users = toHandler <$> selectUsers
+users :: (HasConnection env, HasLogFunc env) => RIO env (Servant.Handler [User])
+users = pure <$> selectUsersDebug
