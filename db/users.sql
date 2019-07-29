@@ -10,3 +10,20 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 COMMIT;
+
+BEGIN;
+
+INSERT INTO users
+(id
+,password
+,email
+,username
+,bio)
+VALUES
+(1
+,'test'
+,'mdoig@conduit.com'
+,'mdoig'
+,'Code Monkey at Conduit');
+
+COMMIT;

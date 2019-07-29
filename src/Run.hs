@@ -15,11 +15,11 @@ import Data (selectUsers, User)
 
 type API = "users" :> Get '[JSON] [User]
 
-startApp ::  (HasLogFunc env, HasPort env, HasConnection env) => RIO env ()
+startApp ::  (HasLogFunc env, HasConnection env, HasPort env) => RIO env ()
 startApp = do
-  logInfo "booting up"
   app <- conduit
   env <- ask
+  logInfo $ "app is listening on port " <> (display (portL env))
   liftIO $ run (portL env) app
 
 conduit :: (HasConnection env) => RIO env Application

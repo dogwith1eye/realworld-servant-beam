@@ -25,7 +25,7 @@ main = do
     empty
   lo <- logOptionsHandle stderr (optionsVerbose options)
   pc <- mkDefaultProcessContext
-  conn <- connectPostgreSQL "postgresql://postgres@localhost/conduit"
+  conn <- connectPostgreSQL "postgresql://postgres@db/conduit"
   withLogFunc lo $ \lf ->
     let app = App
           { appLogFunc = lf
